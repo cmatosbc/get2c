@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { Shield, Lock, FileCheck, Key } from 'lucide-react';
 import BaseFlow from './BaseFlow';
 
@@ -29,7 +28,7 @@ const steps = [
   }
 ];
 
-const SecurityFlow: FC = () => {
+const SecurityFlow = () => {
   return (
     <BaseFlow
       title="Security & Compliance"

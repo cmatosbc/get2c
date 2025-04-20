@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { UserPlus, Layout, Bell, Zap } from 'lucide-react';
 import BaseFlow from './BaseFlow';
 
@@ -29,7 +28,7 @@ const steps = [
   }
 ];
 
-const ExperienceFlow: FC = () => {
+const ExperienceFlow = () => {
   return (
     <BaseFlow
       title="Member Experience"

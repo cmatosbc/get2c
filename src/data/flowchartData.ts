@@ -20,16 +20,36 @@ export const flowchartData: ModuleType[] = [
             to: '2A',
             description: 'Annual energy reports extraction',
             protocol: 'REST',
-            dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            dataFormat: 'JSON',
+            frequency: '24/day',
             security: {
-              authentication: 'API Key',
+              authentication: 'OAuth2',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '1000/day',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              },
+              headers: {
+                'Content-Security-Policy': "default-src 'self'",
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': 'DENY'
+              }
             },
             validation: {
               maxRetries: 3,
-              timeout: 5000
+              timeout: 30000,
+              schemaValidation: true,
+              sanitization: {
+                input: true,
+                output: true
+              },
+              dataQualityChecks: {
+                completeness: true,
+                consistency: true,
+                accuracy: true
+              }
             }
           }
         ]
@@ -39,7 +59,7 @@ export const flowchartData: ModuleType[] = [
         moduleId: '1B',
         name: 'Eurostat API',
         description: 'EU industry benchmarks and standards',
-        inputFormats: ['SDMX', 'JSON'],
+        inputFormats: ['SDMX', 'JSONStat'],
         outputFormat: 'JSON',
         technology: 'REST API',
         availability: 99.9,
@@ -47,17 +67,32 @@ export const flowchartData: ModuleType[] = [
           {
             to: '2A',
             description: 'EU carbon benchmarks extraction',
-            protocol: 'REST',
-            dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            protocol: 'SOAP',
+            dataFormat: 'XML',
+            frequency: '1/hour',
             security: {
-              authentication: 'API Key',
-              encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              authentication: 'Client Certificate',
+              encryption: 'TLS 1.2',
+              rateLimit: '100/hour',
+              audit: {
+                logging: true,
+                retention: '5 years',
+                accessControl: 'certificate-based'
+              },
+              headers: {
+                'X-Content-Type-Options': 'nosniff',
+                'Strict-Transport-Security': 'max-age=31536000'
+              }
             },
             validation: {
-              maxRetries: 3,
-              timeout: 5000
+              maxRetries: 5,
+              timeout: 60000,
+              schemaValidation: true,
+              sourceVerification: true,
+              xmlValidation: {
+                dtdValidation: true,
+                xsdValidation: true
+              }
             }
           }
         ]
@@ -76,16 +111,36 @@ export const flowchartData: ModuleType[] = [
             to: '2A',
             description: 'Industry sector statistics',
             protocol: 'REST',
-            dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            dataFormat: 'JSON',
+            frequency: '24/day',
             security: {
-              authentication: 'API Key',
+              authentication: 'OAuth2',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '1000/day',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              },
+              headers: {
+                'Content-Security-Policy': "default-src 'self'",
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': 'DENY'
+              }
             },
             validation: {
               maxRetries: 3,
-              timeout: 5000
+              timeout: 30000,
+              schemaValidation: true,
+              sanitization: {
+                input: true,
+                output: true
+              },
+              dataQualityChecks: {
+                completeness: true,
+                consistency: true,
+                accuracy: true
+              }
             }
           }
         ]
@@ -95,7 +150,7 @@ export const flowchartData: ModuleType[] = [
         moduleId: '1D',
         name: 'Member Data Portal',
         description: 'Company manual data input',
-        inputFormats: ['JSON'],
+        inputFormats: ['CSV', 'JSON', 'XLSX'],
         outputFormat: 'JSON',
         technology: 'React Form',
         availability: 99.99,
@@ -104,25 +159,36 @@ export const flowchartData: ModuleType[] = [
             to: '2B',
             description: 'Company carbon data submission',
             protocol: 'REST',
-            dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            dataFormat: 'JSON',
+            frequency: 'on-demand',
             security: {
               authentication: 'JWT',
               encryption: 'TLS 1.3',
+              rateLimit: '100/minute',
               audit: {
                 logging: true,
-                userTracking: true,
-                retention: '7 years'
+                retention: '1 year',
+                accessControl: 'role-based'
+              },
+              headers: {
+                'Content-Security-Policy': "default-src 'self'",
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': 'DENY'
               }
             },
             validation: {
-              inputValidation: true,
-              schema: 'Zod Schema',
-              businessRules: [
-                'Required fields validation',
-                'Data range checks',
-                'Historical comparison'
-              ]
+              maxRetries: 3,
+              timeout: 10000,
+              schemaValidation: true,
+              sanitization: {
+                input: true,
+                output: true
+              },
+              dataQualityChecks: {
+                completeness: true,
+                consistency: true,
+                accuracy: true
+              }
             }
           }
         ]
@@ -154,11 +220,16 @@ export const flowchartData: ModuleType[] = [
             description: 'Raw data validation',
             protocol: 'internal',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'API Key',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              }
             },
             validation: {
               schemaValidation: true,
@@ -187,20 +258,30 @@ export const flowchartData: ModuleType[] = [
             to: '3A',
             description: 'Validated industry data',
             protocol: 'gRPC',
-            dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            dataFormat: 'Avro',
+            frequency: 'streaming',
             security: {
-              authentication: 'API Key',
+              authentication: 'mTLS',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '90 days',
+                accessControl: 'service-mesh'
+              },
+              grpcSecurity: {
+                deadlineSeconds: 30,
+                keepalive: true,
+                compression: true
+              }
             },
             validation: {
               schemaValidation: true,
-              businessRules: [
-                'Industry sector validation',
-                'Member status check',
-                'Data completeness'
-              ]
+              dataQualityChecks: true,
+              avroValidation: {
+                schemaEvolution: true,
+                backwardCompatibility: true
+              }
             }
           }
         ]
@@ -232,11 +313,16 @@ export const flowchartData: ModuleType[] = [
             description: 'Industry metrics calculation',
             protocol: 'internal',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'API Key',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              }
             },
             validation: {
               dataQualityChecks: true,
@@ -266,11 +352,16 @@ export const flowchartData: ModuleType[] = [
             description: 'Association certificate check',
             protocol: 'internal',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'API Key',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              }
             },
             validation: {
               thresholdChecks: true,
@@ -306,13 +397,12 @@ export const flowchartData: ModuleType[] = [
             description: 'Store member certificates',
             protocol: 'SQL',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'Database Auth',
               encryption: 'TLS 1.3',
               audit: {
                 logging: true,
-                tracking: true,
                 retention: '7 years',
                 userTracking: true
               }
@@ -323,7 +413,7 @@ export const flowchartData: ModuleType[] = [
             description: 'Archive official certificates',
             protocol: 'S3',
             dataFormat: 'PDF',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'AWS IAM',
               encryption: 'AES-256',
@@ -473,11 +563,16 @@ export const flowchartData: ModuleType[] = [
             description: 'Member data queries',
             protocol: 'SQL',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'API Key',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              }
             }
           },
           {
@@ -485,11 +580,16 @@ export const flowchartData: ModuleType[] = [
             description: 'Analytics caching',
             protocol: 'Redis',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'API Key',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              }
             }
           }
         ]
@@ -514,11 +614,16 @@ export const flowchartData: ModuleType[] = [
             description: 'Analytics queries',
             protocol: 'SQL',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'API Key',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              }
             }
           }
         ]
@@ -536,7 +641,6 @@ export const flowchartData: ModuleType[] = [
           encryption: 'TLS 1.3',
           audit: {
             logging: true,
-            tracking: true,
             retention: '7 years',
             userTracking: true
           }
@@ -577,11 +681,35 @@ export const flowchartData: ModuleType[] = [
             description: 'Member data and metrics',
             protocol: 'REST',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: '60/minute',
             security: {
-              authentication: 'API Key',
+              authentication: 'Session Cookie',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '300/minute',
+              audit: {
+                logging: true,
+                retention: '30 days',
+                userTracking: true
+              },
+              headers: {
+                'X-XSS-Protection': '1; mode=block',
+                'Content-Security-Policy': "default-src 'self'",
+                'Cache-Control': 'no-store'
+              },
+              csrf: {
+                enabled: true,
+                tokenValidation: true
+              }
+            },
+            validation: {
+              maxRetries: 2,
+              timeout: 5000,
+              dataQualityChecks: true,
+              graphqlValidation: {
+                depthLimit: 5,
+                costAnalysis: true,
+                queryComplexity: true
+              }
             }
           },
           {
@@ -589,11 +717,35 @@ export const flowchartData: ModuleType[] = [
             description: 'Analytics queries',
             protocol: 'GraphQL',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: '60/minute',
             security: {
-              authentication: 'API Key',
+              authentication: 'Session Cookie',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '300/minute',
+              audit: {
+                logging: true,
+                retention: '30 days',
+                userTracking: true
+              },
+              headers: {
+                'X-XSS-Protection': '1; mode=block',
+                'Content-Security-Policy': "default-src 'self'",
+                'Cache-Control': 'no-store'
+              },
+              csrf: {
+                enabled: true,
+                tokenValidation: true
+              }
+            },
+            validation: {
+              maxRetries: 2,
+              timeout: 5000,
+              dataQualityChecks: true,
+              graphqlValidation: {
+                depthLimit: 5,
+                costAnalysis: true,
+                queryComplexity: true
+              }
             }
           }
         ]
@@ -617,15 +769,35 @@ export const flowchartData: ModuleType[] = [
             description: 'Submit member data',
             protocol: 'REST',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'on-demand',
             security: {
-              authentication: 'API Key',
+              authentication: 'JWT',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '100/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              },
+              headers: {
+                'Content-Security-Policy': "default-src 'self'",
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': 'DENY'
+              }
             },
             validation: {
-              clientSide: true,
-              serverSide: true
+              maxRetries: 3,
+              timeout: 10000,
+              schemaValidation: true,
+              sanitization: {
+                input: true,
+                output: true
+              },
+              dataQualityChecks: {
+                completeness: true,
+                consistency: true,
+                accuracy: true
+              }
             }
           }
         ]
@@ -649,11 +821,35 @@ export const flowchartData: ModuleType[] = [
             description: 'Certificate operations',
             protocol: 'REST',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'on-demand',
             security: {
-              authentication: 'API Key',
+              authentication: 'JWT',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '100/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              },
+              headers: {
+                'Content-Security-Policy': "default-src 'self'",
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': 'DENY'
+              }
+            },
+            validation: {
+              maxRetries: 3,
+              timeout: 10000,
+              schemaValidation: true,
+              sanitization: {
+                input: true,
+                output: true
+              },
+              dataQualityChecks: {
+                completeness: true,
+                consistency: true,
+                accuracy: true
+              }
             }
           }
         ]
@@ -677,11 +873,35 @@ export const flowchartData: ModuleType[] = [
             description: 'Admin operations',
             protocol: 'REST',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'on-demand',
             security: {
-              authentication: 'API Key',
+              authentication: 'JWT',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '100/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              },
+              headers: {
+                'Content-Security-Policy': "default-src 'self'",
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': 'DENY'
+              }
+            },
+            validation: {
+              maxRetries: 3,
+              timeout: 10000,
+              schemaValidation: true,
+              sanitization: {
+                input: true,
+                output: true
+              },
+              dataQualityChecks: {
+                completeness: true,
+                consistency: true,
+                accuracy: true
+              }
             }
           },
           {
@@ -689,11 +909,35 @@ export const flowchartData: ModuleType[] = [
             description: 'Member management',
             protocol: 'REST',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'on-demand',
             security: {
-              authentication: 'API Key',
+              authentication: 'JWT',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '100/minute',
+              audit: {
+                logging: true,
+                retention: '1 year',
+                accessControl: 'role-based'
+              },
+              headers: {
+                'Content-Security-Policy': "default-src 'self'",
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': 'DENY'
+              }
+            },
+            validation: {
+              maxRetries: 3,
+              timeout: 10000,
+              schemaValidation: true,
+              sanitization: {
+                input: true,
+                output: true
+              },
+              dataQualityChecks: {
+                completeness: true,
+                consistency: true,
+                accuracy: true
+              }
             }
           }
         ]
@@ -736,11 +980,31 @@ export const flowchartData: ModuleType[] = [
             description: 'Infrastructure metrics',
             protocol: 'Prometheus',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'API Key',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '15 days',
+                metricsScraping: true
+              },
+              prometheusAuth: {
+                basicAuth: true,
+                tlsClient: true
+              }
+            },
+            validation: {
+              metricValidation: {
+                rangeChecks: true,
+                typeValidation: true,
+                labelConsistency: true
+              },
+              alerting: {
+                thresholds: true,
+                anomalyDetection: true
+              }
             }
           },
           {
@@ -748,11 +1012,23 @@ export const flowchartData: ModuleType[] = [
             description: 'System logs',
             protocol: 'Fluentd',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'API Key',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '30 days',
+                accessControl: 'role-based'
+              }
+            },
+            validation: {
+              logValidation: {
+                formatChecks: true,
+                timestampCheck: true,
+                logLevelChecks: true
+              }
             }
           }
         ]
@@ -790,11 +1066,23 @@ export const flowchartData: ModuleType[] = [
             description: 'System alerts',
             protocol: 'HTTP',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'API Key',
               encryption: 'TLS 1.3',
-              rateLimit: '1000/minute'
+              rateLimit: '5000/minute',
+              audit: {
+                logging: true,
+                retention: '30 days',
+                accessControl: 'role-based'
+              }
+            },
+            validation: {
+              alertValidation: {
+                thresholdChecks: true,
+                anomalyDetection: true,
+                notificationChecks: true
+              }
             }
           }
         ]
@@ -869,7 +1157,7 @@ export const flowchartData: ModuleType[] = [
             description: 'Deploy applications',
             protocol: 'Kubernetes API',
             dataFormat: 'Protobuf',
-            frequency: '1000/minute',
+            frequency: 'streaming',
             security: {
               authentication: 'Service Account',
               encryption: 'TLS 1.3'

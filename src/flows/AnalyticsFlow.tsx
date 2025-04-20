@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { BarChart2, LineChart, PieChart, TrendingUp } from 'lucide-react';
 import BaseFlow from './BaseFlow';
 
@@ -29,7 +28,7 @@ const steps = [
   }
 ];
 
-const AnalyticsFlow: FC = () => {
+const AnalyticsFlow = () => {
   return (
     <BaseFlow
       title="Analytics & Reporting"

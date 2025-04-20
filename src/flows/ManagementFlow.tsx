@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { Users, UserCheck, ClipboardList, History } from 'lucide-react';
 import BaseFlow from './BaseFlow';
 
@@ -29,7 +28,7 @@ const steps = [
   }
 ];
 
-const ManagementFlow: FC = () => {
+const ManagementFlow = () => {
   return (
     <BaseFlow
       title="Association Management"

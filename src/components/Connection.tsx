@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Connection as ConnectionType } from '../types/flowchart';
 import { 
   Activity, Clock, CheckCircle, Lock, 
-  RefreshCw, Zap, Network, AlertCircle 
+  RefreshCw, Zap, Network, AlertCircle,
+  Shield, Database, FileCheck, Archive,
+  FileWarning, UserCheck, Settings
 } from 'lucide-react';
 
 interface ConnectionProps {
@@ -11,47 +13,27 @@ interface ConnectionProps {
 }
 
 const getConnectionStyle = (type?: string) => {
-  switch (type) {
-    case 'data_ingestion':
-      return 'stroke-blue-500/70 hover:stroke-blue-500';
-    case 'data_processing':
-      return 'stroke-green-500/70 hover:stroke-green-500';
-    case 'data_storage':
-      return 'stroke-purple-500/70 hover:stroke-purple-500';
-    case 'data_retrieval':
-      return 'stroke-amber-500/70 hover:stroke-amber-500';
-    case 'api_call':
-      return 'stroke-indigo-500/70 hover:stroke-indigo-500';
-    case 'event_stream':
-      return 'stroke-red-500/70 hover:stroke-red-500';
-    case 'security_flow':
-      return 'stroke-emerald-500/70 hover:stroke-emerald-500';
-    case 'monitoring':
-      return 'stroke-cyan-500/70 hover:stroke-cyan-500';
-    default:
-      return 'stroke-gray-500/70 hover:stroke-gray-500';
-  }
+  return 'stroke-teal-500/70 hover:stroke-teal-400';
 };
 
 const getFrequencyIcon = (frequency?: string) => {
-  switch (frequency) {
+  switch (frequency?.toLowerCase()) {
     case 'real-time':
-      return <Zap className="w-3 h-3" />;
+      return <Zap className="w-3 h-3 text-teal-400" />;
     case 'streaming':
-      return <Activity className="w-3 h-3" />;
-    case 'batch':
-      return <RefreshCw className="w-3 h-3" />;
+      return <Activity className="w-3 h-3 text-teal-400" />;
+    case 'on-demand':
+      return <Clock className="w-3 h-3 text-teal-400" />;
     default:
-      return <Clock className="w-3 h-3" />;
+      return <RefreshCw className="w-3 h-3 text-teal-400" />;
   }
 };
 
 const Connection: React.FC<ConnectionProps> = ({ data, moduleType }) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const connectionStyle = getConnectionStyle(data.type);
   const frequencyIcon = getFrequencyIcon(data.frequency);
 
-  // Default path - can be customized based on module positions later
   const pathData = "M0,0 C50,0 50,50 100,50";
 
   return (
@@ -92,82 +74,140 @@ const Connection: React.FC<ConnectionProps> = ({ data, moduleType }) => {
         />
       </svg>
 
-      {/* Connection Label */}
-      {data.label && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                       text-xs text-slate-300 bg-slate-800/80 backdrop-blur-sm px-2 py-0.5 rounded 
-                       flex items-center gap-1 whitespace-nowrap cursor-pointer">
-          {frequencyIcon}
-          <span>{data.label}</span>
+      {/* Simple Label */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                     flex flex-col items-center">
+        {/* First line: To: <ID>•<Protocol> */}
+        <div className="text-xs text-slate-300 bg-teal-900/20 backdrop-blur-sm px-2 py-0.5 rounded-t 
+                       border border-b-0 border-teal-800/30 font-light">
+          To: {data.to}•{data.protocol}
         </div>
-      )}
+        
+        {/* Second line: Description */}
+        <div className="text-xs text-slate-300 bg-teal-900/20 backdrop-blur-sm px-2 py-0.5
+                       border-x border-teal-800/30 font-light max-w-[150px] truncate">
+          {data.description}
+        </div>
+        
+        {/* Third line: Auth + Frequency */}
+        <div className="text-xs text-slate-300 bg-teal-900/20 backdrop-blur-sm px-2 py-0.5 rounded-b
+                       border border-t-0 border-teal-800/30 flex items-center gap-1.5">
+          <Lock className="w-3 h-3 text-teal-400" />
+          <span className="font-light">{data.security.authentication}</span>
+          <span className="w-px h-3 bg-teal-800/30" />
+          {frequencyIcon}
+          <span className="font-light">{data.frequency}</span>
+        </div>
+      </div>
 
-      {/* Hover Tooltip */}
-      {showDetails && (
-        <div className="absolute z-20 top-0 left-1/2 transform -translate-x-1/2 -translate-y-full mb-2
-                       text-xs bg-slate-900/95 backdrop-blur-sm rounded shadow-xl 
-                       border border-slate-700 p-2 min-w-[200px] pointer-events-none">
-          <div className="space-y-2">
-            {/* Description */}
-            {data.description && (
-              <p className="text-slate-300">{data.description}</p>
-            )}
-
-            {/* Protocol & Format */}
-            <div className="flex items-center justify-between text-slate-400">
-              <span className="flex items-center gap-1">
-                <Network className="w-3 h-3" />
-                {data.protocol}
-              </span>
-              {data.dataFormat && (
-                <span>({data.dataFormat})</span>
-              )}
+      {/* Detailed Tooltip */}
+        <div className="absolute z-50 w-80 bg-teal-900/20 backdrop-blur-md border border-teal-800/30 
+                       rounded-lg p-4 shadow-xl -translate-y-full -translate-x-1/2 left-1/2 bottom-full mb-2">
+          <div className="space-y-4">
+            {/* Basic Info */}
+            <div>
+              <h4 className="text-xs font-light text-teal-400 mb-2 flex items-center gap-1.5">
+                <Network className="w-3 h-3" /> Connection Details
+              </h4>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <Database className="w-3 h-3 text-teal-400" />
+                  <span className="text-slate-300 font-light">Format: {data.dataFormat}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {frequencyIcon}
+                  <span className="text-slate-300 font-light">Frequency: {data.frequency}</span>
+                </div>
+              </div>
             </div>
 
-            {/* Performance */}
-            {(data.latency || data.throughput) && (
-              <div className="flex gap-3 text-slate-400">
-                {data.latency && (
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {data.latency}
-                  </span>
-                )}
-                {data.throughput && (
-                  <span className="flex items-center gap-1">
-                    <Activity className="w-3 h-3" />
-                    {data.throughput}
-                  </span>
-                )}
-              </div>
-            )}
-
-            {/* Security */}
+            {/* Security Section */}
             {data.security && (
-              <div className="flex items-center gap-2 text-slate-400">
-                <Lock className="w-3 h-3" />
-                {data.security.authentication}
+              <div className="border-t border-teal-800/30 pt-3">
+                <h4 className="text-xs font-light text-teal-400 mb-2 flex items-center gap-1.5">
+                  <Shield className="w-3 h-3" /> Security
+                </h4>
+                <div className="grid grid-cols-1 gap-1.5 text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <Lock className="w-3 h-3 text-teal-400" />
+                    <span className="text-slate-300 font-light">Auth: {data.security.authentication}</span>
+                  </div>
+                  {data.security.encryption && (
+                    <div className="flex items-center gap-1.5">
+                      <Shield className="w-3 h-3 text-teal-400" />
+                      <span className="text-slate-300 font-light">{data.security.encryption}</span>
+                    </div>
+                  )}
+                  {data.security.rateLimit && (
+                    <div className="flex items-center gap-1.5">
+                      <Activity className="w-3 h-3 text-teal-400" />
+                      <span className="text-slate-300 font-light">Rate limit: {data.security.rateLimit}</span>
+                    </div>
+                  )}
+                  {data.security.audit && (
+                    <div className="flex items-center gap-1.5">
+                      <Archive className="w-3 h-3 text-teal-400" />
+                      <span className="text-slate-300 font-light">
+                        Audit: {data.security.audit.retention}
+                        {data.security.audit.accessControl && ` • ${data.security.audit.accessControl}`}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
-            {/* Validation */}
+            {/* Validation Section */}
             {data.validation && (
-              <div className="flex items-center gap-2 text-slate-400">
-                <CheckCircle className="w-3 h-3" />
-                Validated
-              </div>
-            )}
-
-            {/* Retry Policy */}
-            {data.retryPolicy && (
-              <div className="text-slate-400 flex items-center gap-1">
-                <RefreshCw className="w-3 h-3" />
-                Retries: {data.retryPolicy.maxRetries} ({data.retryPolicy.backoffType})
+              <div className="border-t border-teal-800/30 pt-3">
+                <h4 className="text-xs font-light text-teal-400 mb-2 flex items-center gap-1.5">
+                  <FileCheck className="w-3 h-3" /> Validation
+                </h4>
+                <div className="grid grid-cols-1 gap-1.5 text-xs">
+                  {data.validation.maxRetries && (
+                    <div className="flex items-center gap-1.5">
+                      <RefreshCw className="w-3 h-3 text-teal-400" />
+                      <span className="text-slate-300 font-light">Max retries: {data.validation.maxRetries}</span>
+                    </div>
+                  )}
+                  {data.validation.timeout && (
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3 h-3 text-teal-400" />
+                      <span className="text-slate-300 font-light">Timeout: {data.validation.timeout}ms</span>
+                    </div>
+                  )}
+                  {data.validation.schemaValidation && (
+                    <div className="flex items-center gap-1.5">
+                      <FileWarning className="w-3 h-3 text-teal-400" />
+                      <span className="text-slate-300 font-light">Schema validation enabled</span>
+                    </div>
+                  )}
+                  {data.validation.dataQualityChecks && (
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle className="w-3 h-3 text-teal-400" />
+                      <span className="text-slate-300 font-light">
+                        Quality checks enabled
+                        {typeof data.validation.dataQualityChecks === 'object' && (
+                          <>
+                            {data.validation.dataQualityChecks.completeness && ' • Completeness'}
+                            {data.validation.dataQualityChecks.consistency && ' • Consistency'}
+                            {data.validation.dataQualityChecks.accuracy && ' • Accuracy'}
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  )}
+                  {data.validation.sourceVerification && (
+                    <div className="flex items-center gap-1.5">
+                      <UserCheck className="w-3 h-3 text-teal-400" />
+                      <span className="text-slate-300 font-light">Source verification enabled</span>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
         </div>
-      )}
     </div>
   );
 };

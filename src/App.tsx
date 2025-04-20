@@ -13,15 +13,19 @@ import AnalyticsFlow from './flows/AnalyticsFlow';
 import ExperienceFlow from './flows/ExperienceFlow';
 import ManagementFlow from './flows/ManagementFlow';
 import SecurityFlow from './flows/SecurityFlow';
+import Justification from './pages/Justification';
+import Welcome from './pages/Welcome';
 
 const App: FC = () => {
+  const baseUrl = import.meta.env.MODE === 'production' ? import.meta.env.BASE_URL : '/';
   return (
-    <Router>
+    <Router basename={baseUrl}>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
         <Header />
         <main className="min-h-[calc(100vh-4rem)]">
           <Routes>
-            <Route path="/" element={<FlowchartView />} />
+            <Route path="/" element={<Welcome />} />
+            <Route path="/diagram" element={<FlowchartView />} />
             <Route path="/flows/member-data" element={<MemberDataFlow />} />
             <Route path="/flows/certificate" element={<CertificateFlow />} />
             <Route path="/flows/certificate-generation" element={<CertificateGenerationFlow />} />
@@ -33,7 +37,7 @@ const App: FC = () => {
             <Route path="/flows/management" element={<ManagementFlow />} />
             <Route path="/flows/security" element={<SecurityFlow />} />
             <Route path="/roadmap" element={<Roadmap />} />
-            <Route path="/docs" element={<div className="p-8 text-center">Documentation - Coming Soon</div>} />
+            <Route path="/justification" element={<Justification />} />
             <Route path="/contact" element={<div className="p-8 text-center">Contact - Coming Soon</div>} />
           </Routes>
         </main>
