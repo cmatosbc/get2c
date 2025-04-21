@@ -29,7 +29,7 @@ const Welcome = () => {
           </p>
 
           <p className="mb-6 text-slate-300 font-light">
-            On the menus listed on the upper right corner you will find:
+            On the menus listed on the upper right corner you will find (although the navigation is also possible from clicking the items below):
           </p>
 
           <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 mb-8">
@@ -100,17 +100,15 @@ const Welcome = () => {
           </div>
 
           <div className="bg-teal-900/20 border border-teal-800/30 rounded-lg p-6">
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 mb-3">
               <HelpCircle className="h-6 w-6 text-teal-400 flex-shrink-0 mt-1" />
-              <div>
-                <p className="mb-4 text-slate-300 font-light">
-                  I would appreciate the opportunity to walk you through this site so that we can deep-dive into all the aspects of this initiative.
-                </p>
-                <p className="text-lg font-light text-teal-400">
+              <p className="text-lg font-light text-teal-400">
                   Welcome - Enjoy the journey!
                 </p>
-              </div>
             </div>
+            <p className="mb-4 text-slate-300 font-light">
+                As we are dealing with a Tech Lead position, I preferred to expose my ideas on the challenge in a simple React app - which can be accessed from the Github repo as code but also as a running app, deployed through Github Pages.I would appreciate the opportunity to walk you through this site so that we can deep-dive into all the aspects of this initiative.
+            </p>
           </div>
         </div>
       </div>

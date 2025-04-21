@@ -15,6 +15,7 @@ import ManagementFlow from './flows/ManagementFlow';
 import SecurityFlow from './flows/SecurityFlow';
 import Justification from './pages/Justification';
 import Welcome from './pages/Welcome';
+import Contact from './pages/Contact';
 
 const App: FC = () => {
   const baseUrl = import.meta.env.MODE === 'production' ? import.meta.env.BASE_URL : '/';
@@ -38,7 +39,7 @@ const App: FC = () => {
             <Route path="/flows/security" element={<SecurityFlow />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/justification" element={<Justification />} />
-            <Route path="/contact" element={<div className="p-8 text-center">Contact - Coming Soon</div>} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
       </div>

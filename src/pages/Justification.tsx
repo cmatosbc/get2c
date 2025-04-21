@@ -33,9 +33,9 @@ const techJustifications = [
     tech: 'TimescaleDB + Redis + S3',
     businessValue: 'Similar to a highly organized digital filing system that combines instant access with secure long-term storage. TimescaleDB and Redis are open-source solutions with strong community support, eliminating expensive proprietary database licenses. These modern, cloud-native technologies attract top talent interested in working with cutting-edge tools.',
     justification: [
-      'TimescaleDB: Optimized for time-series data with automatic partitioning and efficient querying. Perfect for storing historical carbon metrics with minimal query latency. This plugin is like comparing a regular filing cabinet to one that is specifically designed for chronological documents. The regular cabinet can hold the documents, but the time-series optimized one has special sections and indexing that make it much faster to find all documents from a specific period or to see how things have evolved over time.',
+      'TimescaleDB: Optimized for time-series data with automatic partitioning and efficient querying. Perfect for storing historical carbon metrics with minimal query latency. This plugin is like comparing a regular filing cabinet to one that is specifically designed for chronological documents. The regular cabinet can hold the documents, but the time-series optimized one has special sections and indexing that make it much faster to find all documents from a specific period or to see how things have evolved over time. A regular Postgres instance would work though.',
       'Redis: In-memory caching reduces database load and provides sub-millisecond response times. Key for real-time dashboard updates and session management. Nonetheless, Redis is open-source, well documented and might be useful not just for caching, but also for pub/sub routines and dealing quickly with sophisticated data structures.',
-      'S3-compatible storage: Ensures durability (11 9s) and availability (4 9s) for critical certificate storage. Supports versioning and lifecycle policies for compliance. To the point: storing these on your local computer or even a traditional server can have limitations in terms of space, reliability (what if your computer crashes?), and accessibility (can you easily get to your files from anywhere?). S3 may tackle these issues while providing a cost-effective, scalable, and secure solution.'
+      'S3-compatible storage: Although not essential, a S3 storage not only brings more reliability to the certificates filesystem, but opens the possibility of using serverless functions to process files. Supports versioning and lifecycle policies for compliance. To the point: storing these on your local computer or even a traditional server can have limitations in terms of space, reliability (what if your computer crashes?), and accessibility (can you easily get to your files from anywhere?). S3 may tackle these issues while providing a cost-effective, scalable, and secure solution.'
     ]
   },
   {
@@ -59,7 +59,7 @@ const techJustifications = [
     justification: [
       'REST: Chosen for external API compatibility and broad client support. Perfect for member-facing endpoints with standard HTTP semantics.',
       'gRPC: Internal service communication with type safety and excellent performance. Bi-directional streaming enables real-time metric updates.',
-      'Protocol Buffers: Schema-driven serialization reduces payload size by 30-40% compared to JSON. Ensures backward compatibility for API evolution.',
+      'Protocol Buffers: Maybe overkill for this use case, but it is a good candidate for future use.',
       'GraphQL: Enables efficient data fetching and dynamic queries, reducing the need for multiple API calls and improving performance. Using Apollo Server, the implementation gets simpler and predictable, also aligning with the Typescript and React stack.'
     ]
   },
@@ -68,7 +68,7 @@ const techJustifications = [
     icon: <Code className="w-6 h-6 text-teal-400" />,
     title: 'Frontend',
     tech: 'React + TypeScript + Tailwind',
-    businessValue: 'This is the user interface - like a well-designed dashboard in a modern car. React is backed by Meta (Facebook) and has one of the largest developer communities worldwide, making it easy to find talented developers at various experience levels and price points. The modern stack ensures the application stays relevant and maintainable for years to come.',
+    businessValue: 'This is the user interface - like a well-designed dashboard in a modern car. React is backed by Meta (Facebook) and has one of the largest developer communities worldwide, making it easy to find talented developers at various experience levels and price points. The modern stack ensures the application stays relevant and maintainable for years to come. Using Next.js, Remix or other frameworks is also a possibility, which could be a good candidate for future use.',
     justification: [
       'Tailwind: A utility-first CSS framework that makes it easier to build custom designs and maintain consistent styling. It provides a set of pre-defined classes that can be combined to create unique styles without writing custom CSS. Imposes a natural standard, avoiding elements, pages or components that will stand off from the planned design.',
       'React: Industry-standard library with excellent performance and component reusability. Virtual DOM ensures efficient updates for real-time data visualization.',
@@ -84,7 +84,7 @@ const Justification: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-light text-teal-400 mb-4 tracking-tight">Technical Justification</h1>
         <p className="text-xl mb-8 font-light text-slate-300">
-          A comprehensive breakdown of our technical choices and their business value.
+          A comprehensive breakdown of my technical choices and their business value.
         </p>
 
         <div className="space-y-8">
